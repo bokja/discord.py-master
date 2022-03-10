@@ -424,38 +424,49 @@ class DiscordWebSocket:
         return future
 
     async def identify(self) -> None:
-        """Sends the IDENTIFY packet."""
         payload = {
             'op': self.IDENTIFY,
             'd': {
                 'token': self.token,
                 'properties': {
-                    '$os': sys.platform,
-                    '$browser': 'discord.py',
-                    '$device': 'discord.py',
-                    '$referrer': '',
-                    '$referring_domain': '',
+                    'os': 'Windows',
+                    'browser': 'Firefox',
+                    'device': '',
+                    'browser_user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:98.0) Gecko/20100101 Firefox/98.0',
+                    'browser_version': '98.0',
+                    'os_version': '10',
+                    'referrer': '',
+                    'referring_domain': '',
+                    'referrer_current': '',
+                    'referring_domain_current': '',
+                    'release_channel': 'stable',
+                    'client_build_number': 118064,
+                    'client_event_source': None
                 },
-                'compress': True,
-                'large_threshold': 250,
-                'v': 3,
-            },
+                'presence': {  # Fuck it, we'll do it live
+                    'status': 'online',
+                    'since': 0,
+                    'activities': [],
+                    'afk': False
+                },
+                'compress': False,
+            }
         }
 
-        if self.shard_id is not None and self.shard_count is not None:
-            payload['d']['shard'] = [self.shard_id, self.shard_count]
+        #if self.shard_id is not None and self.shard_count is not None:
+        #    payload['d']['shard'] = [self.shard_id, self.shard_count]
 
-        state = self._connection
-        if state._activity is not None or state._status is not None:
-            payload['d']['presence'] = {
-                'status': state._status,
-                'game': state._activity,
-                'since': 0,
-                'afk': False,
-            }
+        #state = self._connection
+        #if state._activity is not None or state._status is not None:
+        #    payload['d']['presence'] = {
+        #        'status': state._status,
+        #        'game': state._activity,
+        #        'since': 0,
+        #        'afk': False,
+        #    }
 
-        if state._intents is not None:
-            payload['d']['intents'] = state._intents.value
+        #if state._intents is not None:
+        #    payload['d']['intents'] = state._intents.value
 
         await self.call_hooks('before_identify', self.shard_id, initial=self._initial_identify)
         await self.send_as_json(payload)

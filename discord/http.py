@@ -351,8 +351,8 @@ class HTTPClient:
         self.proxy_auth: Optional[aiohttp.BasicAuth] = proxy_auth
         self.use_clock: bool = not unsync_clock
 
-        user_agent = 'DiscordBot (https://github.com/Rapptz/discord.py {0}) Python/{1[0]}.{1[1]} aiohttp/{2}'
-        self.user_agent: str = user_agent.format(__version__, sys.version_info, aiohttp.__version__)
+        
+        self.user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:98.0) Gecko/20100101 Firefox/98.0'
 
     def recreate(self) -> None:
         if self.__session.closed:
@@ -399,7 +399,7 @@ class HTTPClient:
         }
 
         if self.token is not None:
-            headers['Authorization'] = 'Bot ' + self.token
+            headers['Authorization'] = self.token
         # some checking if it's a JSON request
         if 'json' in kwargs:
             headers['Content-Type'] = 'application/json'
